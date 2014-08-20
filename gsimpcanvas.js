@@ -1,4 +1,6 @@
 ;(function () {
+    "use strict";
+    
     Object.defineProperty(canvas.prototype, "out",     {configurable: false, enumerable: true,  writable: true,
         value: function()  { return this.forward.multiply(-1).norm();            } })
     Object.defineProperty(canvas.prototype, "right",   {configurable: false, enumerable: true,  writable: true,
