@@ -39,10 +39,11 @@
             this.canvas.iconbar.append(b);
             return b;
         }
-
+        
+        // Load necessary styling.
         var myStylesLocation = "https://raw.githack.com/thehappyt/PHY-GSInit/master/gsapp.css";
         $('<link rel="stylesheet" type="text/css" href="'+myStylesLocation+'" >') .appendTo("head");
-
+        
         if (!options.title) options.title = '';
         if (!options.caption) options.caption = '';
         this.appst(options.title, options.caption);
