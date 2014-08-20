@@ -110,15 +110,16 @@
         value: function(args) {
             if (this.__activated) for (var gid in this.gps) { this.gps[gid].cleanUp(); delete this.gps[gid]; };
             // *** REVIEW ARGUMENTS AND INSTANTIATE VARIABLES ***
+            if (!args.canvas.grids || !args.canvas.sources) throw new Error("Grids require improved canvas.");
             args.canvas = args.canvas || canvas.selected;                                                                           /////// this.canvas             /////// REQUIRED
-            args.N = args.N || 15;
-            args.d = args.d || 1;
+            args.N = args.N || args.canvas.grids.N || 15;
+            args.d = args.d || args.canvas.grids.d || 1;
             args.center = args.center || args.canvas.center;
-            args.shaftwidth = args.shaftwidth || 0.075;
-            args.loff = args.loff || 0.0;
-            args.eoff = args.eoff || 0.4;
-            args.voff = args.voff || -0.1;
-            args.sources = args.sources || {};
+            args.shaftwidth = args.shaftwidth || args.canvas.grids.shaftwidth || 0.075;
+            args.loff = args.loff || args.canvas.grids.loff || 0.0;
+            args.eoff = args.eoff || args.canvas.grids.eoff || 0.4;
+            args.voff = args.voff || args.canvas.grids.voff || -0.1;
+            args.sources = args.canvas.sources || {};
             for(var id in args) this[id] = args[id];
 
             // *** INIT VARIABLES ***
