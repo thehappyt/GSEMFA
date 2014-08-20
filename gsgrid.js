@@ -169,9 +169,9 @@
                 var N = self.N
                 var d = self.d = self.canvas.range/(self.N + 0.25)
                 var center = self.center = self.canvas.center;
-                var ohat = this.ohat = self.canvas.out();
-                var rhat = this.rhat = self.canvas.right();
-                var that = this.that = self.canvas.top();
+                var ohat = self.ohat = self.canvas.out();
+                var rhat = self.rhat = self.canvas.right();
+                var that = self.that = self.canvas.top();
                 
                 console.log(rhat, that, ohat);
                 for (var i = -N; i <= N; i++) { for (var j = -N; j <= N; j++){
