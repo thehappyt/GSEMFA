@@ -112,14 +112,15 @@
             // *** REVIEW ARGUMENTS AND INSTANTIATE VARIABLES ***
             if (!args.canvas.grids || !args.canvas.sources) throw new Error("Grids require improved canvas.");
             args.canvas = args.canvas || canvas.selected;                                                                           /////// this.canvas             /////// REQUIRED
-            args.N = args.N || args.canvas.grids.N || 15;
-            args.d = args.d || args.canvas.grids.d || 1;
+            args.grids = args.grids || args.canvas.grids || {};
+            args.sources = args.sources || args.canvas.sources || {};
+            args.N = args.N || args.grids.N || 15;
+            args.d = args.d || args.grids.d || 1;
             args.center = args.center || args.canvas.center;
             args.shaftwidth = args.shaftwidth || args.canvas.grids.shaftwidth || 0.075;
-            args.loff = args.loff || args.canvas.grids.loff || 0.0;
-            args.eoff = args.eoff || args.canvas.grids.eoff || 0.4;
-            args.voff = args.voff || args.canvas.grids.voff || -0.1;
-            args.sources = args.canvas.sources || {};
+            args.loff = args.loff || args.grids.loff || 0.0;
+            args.eoff = args.eoff || args.grids.eoff || 0.4;
+            args.voff = args.voff || args.grids.voff || -0.1;
             for(var id in args) this[id] = args[id];
 
             // *** INIT VARIABLES ***
