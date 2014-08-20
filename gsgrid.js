@@ -39,7 +39,6 @@
             if (!(x instanceof vec)) throw new Error("Gridpoint 'pos' attribute must be a vector.");
             var pos = this.canvas.inPlane(x);
             var ohat = this.grid.ohat, rhat = this.grid.rhat, that = this.grid.that, voff = this.grid.voff || -0.1;
-            console.log(rhat, that, ohat);
             this.lbl.pos = pos.add(ohat.multiply(this.grid.loff || 0.0));
             this.efv.pos = pos.add(ohat.multiply(this.grid.eoff || 0.4));
             this.vqd.v0.pos = pos.add((ohat.multiply(voff)).add((this.grid.rhat.add(this.grid.that)).multiply(0.5*this.grid.d)));
@@ -173,7 +172,6 @@
                 var rhat = self.rhat = self.canvas.right();
                 var that = self.that = self.canvas.top();
                 
-                console.log(rhat, that, ohat);
                 for (var i = -N; i <= N; i++) { for (var j = -N; j <= N; j++){
                     gps[((i+N)*(2*N+1)+(j+N)+1)].pos = center.add((rhat.multiply(i*d)).add(that.multiply(j*d)));
                 } }
