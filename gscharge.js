@@ -5,6 +5,8 @@
     function qlc(q) { return q?q>0?vec(1.0,1.0,1.0):vec(1.0,1.0,1.0):vec(1.0,1.0,1.0) }
     function isNumString(v) { return (/^-?\d+[.]?\d*$/.test(v)) }
     
+    var nextSourceId = 1;
+    
     var asCharge = function() {
         //Object to which asCharge constructor is applied must be a derived GlowScript Primitive object.
         Object.defineProperty(this, "__sid",  { enumerable: false, configurable: false, writable: true,  value: null });
@@ -37,8 +39,8 @@
                 var ohat = this.canvas.out();
                 v = this.canvas.inPlane(v);
                 this.__pos = v;
-                Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Object.getPrototypeOf(this)),"pos").set.call(this,v.add(ohat.multiply(qoff)))
-                this.lbl.pos = v.add(ohat.multiply(qtxtoff));
+                Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Object.getPrototypeOf(this)),"pos").set.call(this,v.add(ohat.multiply(this.qoff)))
+                this.lbl.pos = v.add(ohat.multiply(this.loff));
                 __changed[this.__sid] = this
             } 
         })
@@ -54,7 +56,7 @@
                 /*
                 if (!val) {
                     this.q = 0;
-                    delete __sources[this.__sid]
+                    delete this.canvas.sources[this.__sid]
                     this.lbl.text = "";
                     this.__sid = null;
                     grid.update();
@@ -64,7 +66,7 @@
         })
         // Connect Charge to Sources
         this.__sid = nextSourceId++;
-        __sources[this.__sid] = this;
+        this.canvas.sources[this.__sid] = this;
         __changed[this.__sid] = this;
         
         /*
@@ -99,7 +101,15 @@
     
     function PointCharge(args) {
         if (!(this instanceof PointCharge)) return new PointCharge(args);
-        args = args || {}; args.size = (vec(1,1,1)).multiply(chargesize);
+        args = args || {};
+        args.canvas = args.canvas || canvas.selected;
+        if (!args.canvas.grids || !args.canvas.sources) throw new Error("Sources require improved canvas.");
+        args.grids = args.canvas.grids;
+        args.sources = args.canvas.sources;
+        args.size = (vec(1,1,1)).multiply(args.sources.chargesize || 0.75);
+        args.qoff = args.sources.qoff || 0.0;
+        args.loff = args.sources.loff || 0.0;
+        args.k0 = args.sources.k0 || 1.0;
         var args2 = {q: args.q || 0, pos: args.pos || vec(0,0,0), visible: args.visible || true };
         delete args.q; delete args.pos;
         sphere.call(this, args);
@@ -109,7 +119,6 @@
             var r = GP.pos.sub(this.pos)
             if (mag(r)===0) { GP.ehide = true; return vec(0,0,0); }
             else { GP.ehide = false; return norm(r).multiply(k0 * this.q / mag2(r)); }
-            
         }
         this.V = function(GP) {
             var r = mag(GP.pos - this.pos)
@@ -123,7 +132,10 @@
     function LineCharge(args) {
         if (!(this instanceof LineCharge)) return new LineCharge(args);
         args = args || {}; args.radius = chargesize/2.0;
-        var args2 = {q: args.q || 0, pos: args.pos || vec(0,0,0), visible: args.visible || true };
+        var args2 = {q: args.q || 0, pos: args.pos || vec(0,0,0), visible: args.visible || true,
+            grids: args.grids || args.canvas.grids || {},
+            qoff: args.canvas.qoff || args.canvas.sources.qoff || 0.0,
+            loff: args.canvas.loff || args.canvas.sources.loff || 0.0 };
         curve.call(this, args);
         this.push(vec(-0.5,0,0),vec(-0.5,0,0),vec(-0.2,0,0),vec(0.2,0,0),vec(0.5,0,0))
         asCharge.call(this);
