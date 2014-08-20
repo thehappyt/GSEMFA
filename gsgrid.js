@@ -110,8 +110,8 @@
         value: function(args) {
             if (this.__activated) for (var gid in this.gps) { this.gps[gid].cleanUp(); delete this.gps[gid]; };
             // *** REVIEW ARGUMENTS AND INSTANTIATE VARIABLES ***
-            if (!args.canvas.grids || !args.canvas.sources) throw new Error("Grids require improved canvas.");
             args.canvas = args.canvas || canvas.selected;                                                                           /////// this.canvas             /////// REQUIRED
+            if (!args.canvas.grids || !args.canvas.sources) throw new Error("Grids require improved canvas.");
             args.grids = args.grids || args.canvas.grids || {};
             args.sources = args.sources || args.canvas.sources || {};
             args.N = args.N || args.grids.N || 15;
