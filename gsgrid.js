@@ -12,7 +12,7 @@
         this.__gid = args.__gid || 0; if (args.__gid) delete args.__gid;
         this.grid = args.grid || new Grid({canvas: this.canvas}); if (args.grid) delete args.grid;
         this.d = args.d || args.grid.d || 1; if (args.d) delete args.d;
-        args.shaftwidth = args.shaftwidth || this.grid.shaftwidth || 0.075;
+        args.shaftwidth = args.shaftwidth || this.grid.shaftwidth;
         args.v0 = args.v0 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
         args.v1 = args.v1 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
         args.v2 = args.v2 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
@@ -115,13 +115,13 @@
             args.grids = args.canvas.grids;
             args.sources = args.canvas.sources;
             console.log(args.grids, args.sources);
-            args.N = args.N || args.grids.N || 15;
-            args.d = args.d || args.grids.d || 1;
+            args.N = args.N || args.grids.N;
+            args.d = args.d || args.grids.d;
             args.center = args.canvas.center;
-            args.shaftwidth = args.shaftwidth || args.grids.shaftwidth || 0.075;
-            args.loff = args.loff || args.grids.loff || 0.0;
-            args.eoff = args.eoff || args.grids.eoff || 0.4;
-            args.voff = args.voff || args.grids.voff || -0.1;
+            args.shaftwidth = args.shaftwidth || args.grids.shaftwidth;
+            args.loff = args.loff || args.grids.loff;
+            args.eoff = args.eoff || args.grids.eoff;
+            args.voff = args.voff || args.grids.voff;
             for(var id in args) this[id] = args[id];
 
             // *** INIT VARIABLES ***
