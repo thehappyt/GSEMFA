@@ -35,8 +35,6 @@
                 var ohat = this.canvas.out();
                 v = this.canvas.inPlane(v);
                 this.__pos = v;
-                //Object.getPrototypeOf(this).pos = v.add(ohat.multiply(qoff));
-                //Object.getPrototypeOf(Object.getPrototypeOf(this)).pos = v.add(ohat.multiply(qoff));
                 Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Object.getPrototypeOf(this)),"pos").set.call(this,v.add(ohat.multiply(qoff)))
                 this.lbl.pos = v.add(ohat.multiply(qtxtoff));
                 __changed[this.__sid] = this
@@ -51,21 +49,23 @@
                 //Object.getPrototypeOf(this).visible = val
                 Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Object.getPrototypeOf(this)),"visible").set.call(this,val);
                 this.lbl.visible = val;
-                //if (!val) {
-                    //this.q = 0;
-                    //delete __sources[this.__sid]
-                    //this.lbl.text = "";
-                    //this.__sid = null;
-                    //grid.update();
-                //}
+                /*
+                if (!val) {
+                    this.q = 0;
+                    delete __sources[this.__sid]
+                    this.lbl.text = "";
+                    this.__sid = null;
+                    grid.update();
+                }
+                */
             }
         })
         // Connect Charge to Sources
         this.__sid = nextSourceId++;
         __sources[this.__sid] = this;
         __changed[this.__sid] = this;
-    
-    /*
+        
+        /*
         //this.__efl = new Array(Math.floor(abs(this.__q * eflno)))  // Setting up automatically plotted E-field lines (#/charge distributed uniformly based on symmetry)
         //Object.defineProperty(this, "eflvisible", {configurable: false, enumerable: true,
         //    get: function() {return this.__efl[0].visible},
@@ -91,7 +91,7 @@
                 return this.__efv                
             }
         })
-    */
+        */
     }
     asCharge.prototype = Object.create(null)
     
