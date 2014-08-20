@@ -112,12 +112,12 @@
             // *** REVIEW ARGUMENTS AND INSTANTIATE VARIABLES ***
             args.canvas = args.canvas || canvas.selected;                                                                           /////// this.canvas             /////// REQUIRED
             if (!args.canvas.grids || !args.canvas.sources) throw new Error("Grids require improved canvas.");
-            args.grids = args.grids || args.canvas.grids || {};
-            args.sources = args.sources || args.canvas.sources || {};
+            args.grids = args.canvas.grids;
+            args.sources = args.canvas.sources;
             args.N = args.N || args.grids.N || 15;
             args.d = args.d || args.grids.d || 1;
-            args.center = args.center || args.canvas.center;
-            args.shaftwidth = args.shaftwidth || args.canvas.grids.shaftwidth || 0.075;
+            args.center = args.canvas.center;
+            args.shaftwidth = args.shaftwidth || args.grids.shaftwidth || 0.075;
             args.loff = args.loff || args.grids.loff || 0.0;
             args.eoff = args.eoff || args.grids.eoff || 0.4;
             args.voff = args.voff || args.grids.voff || -0.1;
@@ -144,7 +144,7 @@
                 v1 = (i==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) }):gps[n-2*N-1].vqd.v0
                 v2 = (i==-N)?(j==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) }):gps[n-1].vqd.v1:gps[n-2*N-1].vqd.v3
                 v3 = (j==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) }):gps[n-1].vqd.v0
-                gps[n] = new GridPoint({ canvas: this.canvas, pos: center.add((rhat.multiply(i*d)).add(that.multiply(j*d))), grid: this, __gid: n, d: this.d, v0: v0, v1: v1, v2: v2, v3: v3 });        // , shaftwidth: this.shaftwidth
+                gps[n] = new GridPoint({ canvas: this.canvas, pos: center.add((rhat.multiply(i*d)).add(that.multiply(j*d))), grid: this, __gid: n, d: this.d, v0: v0, v1: v1, v2: v2, v3: v3 });
                 if ((j == N) && (i < N)) {i++; j=-N;} else j++;
             }
             
