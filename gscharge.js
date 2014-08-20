@@ -115,6 +115,8 @@
         sphere.call(this, args);
         asCharge.call(this);
         for (var id in args2) this[id] = args2[id];
+        console.log(args.grids, args.sources);
+        console.log(this.size, this.qoff, this.loff, this.k0);
         this.E = function(GP) {
             var r = GP.pos.sub(this.pos)
             if (mag(r)===0) { GP.ehide = true; return vec(0,0,0); }
