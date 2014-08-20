@@ -12,17 +12,16 @@
         this.__gid = args.__gid || 0; if (args.__gid) delete args.__gid;
         this.grid = args.grid || new Grid({canvas: this.canvas}); if (args.grid) delete args.grid;
         this.d = args.d || args.grid.d || 1; if (args.d) delete args.d;
-        args.shaftwidth = args.shaftwidth || this.grid.shaftwidth;
         args.v0 = args.v0 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
         args.v1 = args.v1 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
         args.v2 = args.v2 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
         args.v3 = args.v3 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
         // *** INIT GRID and GRIDPOINTS (Label, Efield, VQuad) using PRELIMINARY VARIABLES ***
         this.lbl = label({ canvas: this.canvas, text: 'X', color: vec(0,1,0), height: 6, font: 'Verdana', box: false, line: false, opacity: 0, visible: false });
-        this.efv = arrow({ canvas: this.canvas,  pickable: false, color:vec(0,0,0), axis_and_length: vec(0.5,0,0), shaftwidth: args.shaftwidth, visible: false });
+        this.efv = arrow({ canvas: this.canvas,  pickable: false, color:vec(0,0,0), axis_and_length: vec(0.5,0,0), shaftwidth: this.grid.shaftwidth, visible: false });
         this.vqd =  quad({ canvas: this.canvas, pickable: false, v0: args.v0, v1: args.v1, v2: args.v2, v3: args.v3, visible: false });     //  visible must come after v0, v1, v2, v3 in args (bug in Primitives.js)
         // *** DELETE PRELIMINARY ARGUMENTS ***
-        delete args.shaftwidth; delete args.v0; delete args.v1; delete args.v2; delete args.v3;
+        delete args.v0; delete args.v1; delete args.v2; delete args.v3;
         // *** SET REMAINING ARGUMENTS ***
         args.pos = args.pos || args.canvas.center;
         for(var id in args) this[id] = args[id];
@@ -114,7 +113,6 @@
             if (!args.canvas.grids || !args.canvas.sources) throw new Error("Grids require improved canvas.");
             args.grids = args.canvas.grids;
             args.sources = args.canvas.sources;
-            console.log(args.grids, args.sources);
             args.N = args.N || args.grids.N;
             args.d = args.d || args.grids.d;
             args.center = args.canvas.center;
@@ -123,7 +121,6 @@
             args.eoff = args.eoff || args.grids.eoff;
             args.voff = args.voff || args.grids.voff;
             for(var id in args) this[id] = args[id];
-            console.log(this.N, this.d, this.shaftwidth, this.loff, this.eoff, this.voff);
 
             // *** INIT VARIABLES ***
             var N = this.N;
