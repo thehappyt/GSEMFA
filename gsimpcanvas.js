@@ -13,11 +13,12 @@
             return pos.sub((pos.sub(this.center)).proj(this.out()));
         }
     })
-    Object.defineProperty(canvas.prototype, "grids" {configurable: false, enumerable: true, writable: false,
+    /*Object.defineProperty(canvas.prototype, "grids" {configurable: false, enumerable: true, writable: false,
         value: { N: 15, d: 1, shaftwidth: 0.075, loff: 0.0, eoff: 0.4, voff: -0.1 }
     })
     Object.defineProperty(canvas.prototype, "sources" {configurable: false, enumerable: true, writable: false,
         value: { chargesize: 0.75, qoff: 0.0, loff: 0.0, k0: 1.0 }
     })
+    */
     console.log(canvas.prototype);
 }) ();
