@@ -110,18 +110,31 @@
         value: function(args) {
             if (this.__activated) for (var gid in this.gps) { this.gps[gid].cleanUp(); delete this.gps[gid]; };
             // *** REVIEW ARGUMENTS AND INSTANTIATE VARIABLES ***
+            console.log("Got here 1!");
             args.canvas = args.canvas || canvas.selected;                                                                           /////// this.canvas             /////// REQUIRED
+            console.log("Got here 2!");
             if (!args.canvas.grids || !args.canvas.sources) throw new Error("Grids require improved canvas.");
+            console.log("Got here 3!");
             args.grids = args.canvas.grids;
+            console.log("Got here 4!");
             args.sources = args.canvas.sources;
+            console.log("Got here 5!");
             args.N = args.N || args.grids.N || 15;
+            console.log("Got here 6!");
             args.d = args.d || args.grids.d || 1;
+            console.log("Got here 7!");
             args.center = args.canvas.center;
+            console.log("Got here 8!");
             args.shaftwidth = args.shaftwidth || args.grids.shaftwidth || 0.075;
+            console.log("Got here 9!");
             args.loff = args.loff || args.grids.loff || 0.0;
+            console.log("Got here 10!");
             args.eoff = args.eoff || args.grids.eoff || 0.4;
+            console.log("Got here 11!");
             args.voff = args.voff || args.grids.voff || -0.1;
+            console.log("Got here 12!");
             for(var id in args) this[id] = args[id];
+            console.log("Got here 13!");
 
             // *** INIT VARIABLES ***
             var N = this.N;
