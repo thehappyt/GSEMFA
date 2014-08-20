@@ -26,7 +26,7 @@
                         this.color = qsc(val);
                         this.lbl.color = qlc(val);
                         this.lbl.text = (v.replace('.','').length>4)?val.toExponential(3):(v.indexOf('.')===-1)?v.substr(0,Math.min(v.length,4)):v.substr(0,Math.min(v.length,5))
-                        __changed[this.__sid] = this;
+                        //__changed[this.__sid] = this;
                     }
                 }
             }
@@ -41,7 +41,7 @@
                 this.__pos = v;
                 Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Object.getPrototypeOf(this)),"pos").set.call(this,v.add(ohat.multiply(this.qoff)))
                 this.lbl.pos = v.add(ohat.multiply(this.loff));
-                __changed[this.__sid] = this
+                //__changed[this.__sid] = this
             } 
         })
         // No internal property '__visible', because inherited property '__id' from charge object.
@@ -66,8 +66,8 @@
         })
         // Connect Charge to Sources
         this.__sid = nextSourceId++;
-        this.canvas.sources[this.__sid] = this;
-        __changed[this.__sid] = this;
+        this.sources[this.__sid] = this;
+        //__changed[this.__sid] = this;
         
         /*
         //this.__efl = new Array(Math.floor(abs(this.__q * eflno)))  // Setting up automatically plotted E-field lines (#/charge distributed uniformly based on symmetry)
@@ -131,11 +131,16 @@
     
     function LineCharge(args) {
         if (!(this instanceof LineCharge)) return new LineCharge(args);
-        args = args || {}; args.radius = chargesize/2.0;
-        var args2 = {q: args.q || 0, pos: args.pos || vec(0,0,0), visible: args.visible || true,
-            grids: args.grids || args.canvas.grids || {},
-            qoff: args.canvas.qoff || args.canvas.sources.qoff || 0.0,
-            loff: args.canvas.loff || args.canvas.sources.loff || 0.0 };
+        args = args || {};
+        args.canvas = args.canvas || canvas.selected;
+        if (!args.canvas.grids || !args.canvas.sources) throw new Error("Sources require improved canvas.");
+        args.grids = args.canvas.grids;
+        args.sources = args.canvas.sources;
+        args.radius = (args.sources.chargesize || 0.75)/2.0;
+        args.qoff = args.sources.qoff || 0.0;
+        args.loff = args.sources.loff || 0.0;
+        args.k0 = args.sources.k0 || 1.0;
+        var args2 = {q: args.q || 0, pos: args.pos || vec(0,0,0), visible: args.visible || true };
         curve.call(this, args);
         this.push(vec(-0.5,0,0),vec(-0.5,0,0),vec(-0.2,0,0),vec(0.2,0,0),vec(0.5,0,0))
         asCharge.call(this);
