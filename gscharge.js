@@ -1,4 +1,6 @@
 ;(function () {
+    "use strict";
+    
     function qsc(q) { return q?q>0?vec(1.0,0.0,0.0):vec(0.0,0.0,1.0):vec(0.3,0.3,0.3) }
     function qlc(q) { return q?q>0?vec(1.0,1.0,1.0):vec(1.0,1.0,1.0):vec(1.0,1.0,1.0) }
     function isNumString(v) { return (/^-?\d+[.]?\d*$/.test(v)) }
@@ -162,4 +164,4 @@
     Export(exports)
 
 
-});
+}) ();
