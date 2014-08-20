@@ -148,5 +148,18 @@
         //this.efv; // Initialize E-field vectors.
     }
     LineCharge.prototype = curve.prototype
+    
+    var global = window
+    function Export( exports ) {
+        if (!global.gsapp) global.gsapp = {}
+        for(var id in exports) {
+            global[id] = exports[id]
+            gsapp[id] = exports[id]
+        }
+    }
+
+    var exports = { PointCharge: PointCharge, LineCharge: LineCharge }
+    Export(exports)
+
 
 });
