@@ -188,11 +188,6 @@
                     gpe.opacity = 1-Math.exp(-mag(gpe.E));
                 }
 
-                if (E[__sid] == NaN) {self.ehide = true; E[__sid] = vec(0,0,0);}
-                else if (self.ehide) self.ehide = false;
-                self.efv.E.add(E[__sid]);
-                self.efv.axis_and_length = norm(self.efv.E);
-                self.efv.opacity = 1-Math.exp(-mag(self.efv.E));
             })
             
             this.__activated = true;
