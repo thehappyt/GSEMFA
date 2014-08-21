@@ -11,8 +11,8 @@
         args = args || {};
         // *** INIT PRELIMINARY ARGUMENTS ***
         this.canvas = args.canvas || canvas.selected; if (args.canvas) delete args.canvas;
-        this.__gid = args.__gid || 0; if (args.__gid) delete args.__gid;
-        this.grid = args.grid || new Grid({canvas: this.canvas}); if (args.grid) delete args.grid;
+        this.__gpid = args.__gpid || 0; delete args.__gpid;
+        this.grid = args.grid || new Grid({canvas: this.canvas}); delete args.grid;
         this.d = args.d || args.grid.d || 1; if (args.d) delete args.d;
         args.v0 = args.v0 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
         args.v1 = args.v1 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
@@ -50,7 +50,7 @@
     });
     Object.defineProperty(GridPoint.prototype, "cleanUp",  { configurable: false, enumerable: true,  writable: false, 
         value: function() {
-            this.__gid = null;
+            this.__gpid = null;
             this.grid = null;
             this.lbl.visible = false; this.lbl = null;
             this.efv.visible = false; this.efv = null;
@@ -145,7 +145,7 @@
                 v1 = (i==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) }):gps[n-2*N-1].vqd.v0
                 v2 = (i==-N)?(j==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) }):gps[n-1].vqd.v1:gps[n-2*N-1].vqd.v3
                 v3 = (j==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) }):gps[n-1].vqd.v0
-                gps[n] = new GridPoint({ canvas: this.canvas, pos: center.add((rhat.multiply(i*d)).add(that.multiply(j*d))), grid: this, __gid: n, d: this.d, v0: v0, v1: v1, v2: v2, v3: v3 });
+                gps[n] = new GridPoint({ canvas: this.canvas, pos: center.add((rhat.multiply(i*d)).add(that.multiply(j*d))), grid: this, __gpid: n, d: this.d, v0: v0, v1: v1, v2: v2, v3: v3 });
                 if ((j == N) && (i < N)) {i++; j=-N;} else j++;
             }
             
