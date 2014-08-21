@@ -149,12 +149,32 @@
                 if ((j == N) && (i < N)) {i++; j=-N;} else j++;
             }
             
-            var self = this;
+            var self = this, leftButton = false, scrollButton = false, rightButton = false, rotating = false, zooming = false;
             this.canvas.elements.bind("mousewheel", function() {
-                print(self.canvas.range);
+                print(self.canvas.range, self.canvas.forward);
                 self.update_rca();
             } );
-            
+            this.canvas.elements.mousedown(function (ev) {
+                if (ev.which == 1) leftButton = true;
+                if (ev.which == 2) scrollButton = true;
+                if (ev.which == 3) rightButton = true;
+                zooming = self.canvas.userzoom && (scrollButton || (leftButton && self.canvas.mouse.alt && !self.canvas.mouse.ctrl) || (leftButton && rightButton))
+                rotating = self.canvas.userspin && (rightButton || (leftButton && self.canvas.mouse.ctrl && !self.canvas.mouse.alt))
+            })
+            this.canvas.elements.mousemove(function (ev) {
+                if (zooming || rotating) {
+                    print(self.canvas.range, self.canvas.forward);
+                    self.update_rca();
+                }
+            })
+            this.canvas.elements.mouseup(function (ev) {
+                if (ev.which == 1) leftButton = false;
+                if (ev.which == 2) scrollButton = false;
+                if (ev.which == 3) rightButton = false;
+                zooming = self.canvas.userzoom && (scrollButton || (leftButton && self.canvas.mouse.alt && !self.canvas.mouse.ctrl) || (leftButton && rightButton))
+                rotating = self.canvas.userspin && (rightButton || (leftButton && self.canvas.mouse.ctrl && !self.canvas.mouse.alt))
+            })
+
             this.__gid = nextGridId++;
             this.grids[this.__gid] = this;
             this.__activated = true;
