@@ -138,6 +138,7 @@
             if (opt.title) { opt.title = opt.title + ''; b.attr({ title: opt.title }); }
             //if (opt.text) { opt.text = opt.text + ''; b.text( opt.text ); } //(NOT WORKING YET  b.css("width", "50px"))
             b.button({ icons: { primary: "gsapp-icon " + opt.icon }, text: text })
+            b.removeClass('ui-icon')
             b.click( function() { $(this).blur(); });
             this.canvas.iconbar.append(b);
             return b;
