@@ -115,17 +115,17 @@
         sphere.call(this, args);
         asCharge.call(this);
         for (var id in args2) this[id] = args2[id];
-        this.E = function(GP) {
-            var r = GP.pos.sub(this.pos)
-            if (mag(r)===0) { GP.ehide = true; return vec(0,0,0); }
-            else { GP.ehide = false; return norm(r).multiply(k0 * this.q / mag2(r)); }
+        this.E = function(pos) {
+            var r = pos.sub(this.pos)
+            if (mag(r)===0) return vec(0,0,0);  // what should return to signal ehide;
+            else return norm(r).multiply(k0 * this.q / mag2(r));
         }
-        this.V = function(GP) {
-            var r = mag(GP.pos - this.pos)
-            if (mag(r)===0) { GP.vhide = true; return 0; }
-            else { GP.vhide = false; return (k0 * this.q / r); }
+        this.V = function(pos) {
+            var r = mag(pos.sub(this.pos))
+            if (mag(r)===0) return 0; // what should return to signal vhide;
+            else return (k0 * this.q / r);
         }
-        //this.efv; // Initialize E-field vectors.
+        this.canvas.elements.trigger("chargemove", this.__sid)
     }    
     PointCharge.prototype = sphere.prototype
     
@@ -145,26 +145,26 @@
         this.push(vec(-0.5,0,0),vec(-0.5,0,0),vec(-0.2,0,0),vec(0.2,0,0),vec(0.5,0,0))
         asCharge.call(this);
         for (var id in args2) this[id] = args2[id];
-        this.E = function(GP) {
+        this.E = function(pos) {
             var rh, xp, xm, xh=this.axis, L=this.size.x, q=this.__q
-            var r = GP.pos.sub(this.pos)
+            var r = pos.sub(this.pos)
             xp = (r.dot(xh)) + L/2
             xm = xp - L
             r = r.sub(xh.multiply(xh.dot(r)))
             rh = norm(r)
             r = mag(r)
             if (r===0) return xh.multiply(k0*q*(1/abs(xm)-1/abs(xp))/L)
-            return (k0*q/L)*(( (rh*xp/r - xh) / sqrt( pow(xp,2) + pow(r,2) ) ) - ( (rh*xm/r - xh) / sqrt( pow(xm,2) + pow(r,2) ) ))
+            return (((rh.multiply(xp/r).sub(xh)).multiply(1/sqrt(pow(xp,2)+pow(r,2)))).sub((rh.multiply(xm/r).sub(xh)).multiply(1/sqrt(pow(xm,2)+pow(r,2))))).multiply(k0*q/L)
         }
-        this.V = function(GP) {
+        this.V = function(pos) {
             var r, xp, xm, xh=this.axis, L=this.size.x, q=this.__q
-            r = GP.pos.sub(this.pos)
+            r = pos.sub(this.pos)
             xp = (r.dot(xh)) + L/2
             xm = xp - L
             r = mag(r.sub(xh.multiply(xh.dot(r))))
             return (k0*q/L)*Math.log((xp+sqrt(pow(xp,2)+pow(r,2)))/(xm+sqrt(pow(xm,2)+pow(r,2))))
         }
-        //this.efv; // Initialize E-field vectors.
+        this.canvas.elements.trigger("chargemove", this.__sid)
     }
     LineCharge.prototype = curve.prototype
 
