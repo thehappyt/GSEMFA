@@ -20,35 +20,29 @@
         delete options.title; delete options.caption;
 
         this.addCanvas = function(options) {       // SETUP APPLICATION CANVAS
-            print("Got here 1!")
             options = options || {};
             var cvs = this.canvas = canvas();
             if (!cvs.sources || !cvs.grids) throw new Error("GSApp requires the improved GlowScript canvas module.");
             cvs.__cid = nextCanvasId++;
             this.canvases[cvs.__cid] = cvs;
             cvs.width = options.width || high;
-            print("Got here 2!")
             cvs.height = options.height || high;
             cvs.background = options.background || vec(1,1,1);
             cvs.center = options.center || vec(0,0,0);
             cvs.fov = options.fov || pi/100;
             cvs.resizable = options.resizable || false;
-            print("Got here 3!")
             cvs.title.text(options.title || '');
             cvs.caption.text(options.caption || '');
             cvs.menubar = $("<div/>").css("white-space","pre").addClass("gsmenubar").insertBefore(this.canvas.wrapper)
             cvs.iconbar = $("<div/>").css("white-space","pre").addClass("gsiconbar").insertBefore(this.canvas.wrapper)
             cvs.wrapper.css({margin: '4px'})
-            print("Got here 4!")
             $(cvs.__canvas_element).css({border: '1px solid #AAA'})
             $(cvs.__overlay_element).css({border: '1px solid #AAA'})
             delete options.width; delete options.height; delete options.resizable;
             delete options.background; delete options.title; delete options.caption; 
             delete options.center; delete options.fov;
-            print("Got here 5!")
             for (var id in options) cvs[id] = options[id];
             sphere({ canvas: cvs, visible: false });     // Activate canvas
-            print("Got here 6!")
         }
         
         this.selectCanvas = function(cvs) {         // CHANGE APPLICATION CANVAS
