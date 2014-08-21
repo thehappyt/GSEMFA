@@ -149,11 +149,13 @@
                 if ((j == N) && (i < N)) {i++; j=-N;} else j++;
             }
             
+            /*
             var self = this;
             this.canvas.elements.bind("mousewheel", function() {
                 print(self.canvas.range);
                 self.update_rca();
             } );
+            */
 
             this.__gid = nextGridId++;
             this.grids[this.__gid] = this;
