@@ -11,7 +11,7 @@
         //Object to which asCharge constructor is applied must be a derived GlowScript Primitive object.
         Object.defineProperty(this, "__sid",  { enumerable: false, configurable: false, writable: true,  value: null });
         Object.defineProperty(this, "lbl",    { enumerable: false, configurable: false, writable: false,
-            value: label({ color: vec(0.7,0.7,0.7), /*height: 14,*/ __height: "14", font: 'Times New Roman', border: 0, box: false, line: false, opacity: 0, visible: true, text: '0' })    //bold 14px/
+            value: label({ color: vec(0.7,0.7,0.7), __height: "bold 14px/14", font: 'Times New Roman', border: 0, box: false, line: false, opacity: 0, visible: true, text: '0' })
         });
         Object.defineProperty(this, "__q",    { enumerable: false, configurable: false, writable: true,  value: null });
         Object.defineProperty(this, "q",      { enumerable: true,  configurable: false,
