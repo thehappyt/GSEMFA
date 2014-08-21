@@ -49,6 +49,20 @@
             cvs.iconbar = $("<div/>").css("white-space","pre").addClass("gsiconbar").insertBefore(this.canvas.wrapper)
         }
         
+        //this.menuitem = function(mi) { if (mi instanceof jQuery && (mi.is("li") || mi.is("ul"))) this.canvas.menubar.append(mi.gsmenubar()); }
+        
+        // Syntax: (GSAppobj).iconitem({title, iconclasses, text}, cb)
+        this.iconitem = function(opt) {             // Attaches new icon button to iconbar of selected canvas.
+            var b = $('<button>'), text=opt.text||false;
+            if (opt.title) { opt.title = opt.title + ''; b.attr({ title: opt.title }); }
+            //if (opt.text) { opt.text = opt.text + ''; b.text( opt.text ); } //(NOT WORKING YET  b.css("width", "50px"))
+            b.button({ icons: { primary: "gsapp-icon " + opt.icon }, text: text }) // REQUIRES opt.icon for now!
+            b.children("span").removeClass('ui-icon')
+            b.click( function() { $(this).blur(); });
+            this.canvas.iconbar.append(b);
+            return b;
+        }
+            
         this.selectCanvas = function(cvs) {         // CHANGE APPLICATION CANVAS
             if ((!(cvs instanceof canvas)) || (!this.canvas.sources || !this.canvas.grids)) throw new Error("GSApp requires the improved GlowScript canvas module.");
             if (!cvs.__cid) { cvs.__cid = nextCanvasId++; this.canvases[cvs.__cid] = cvs; }
@@ -134,20 +148,6 @@
             })
         }
         
-        //this.menuitem = function(mi) { if (mi instanceof jQuery && (mi.is("li") || mi.is("ul"))) this.canvas.menubar.append(mi.gsmenubar()); }
-        
-        // Syntax: (GSAppobj).iconitem({title, iconclasses, text}, cb)
-        this.iconitem = function(opt) {             // Attaches new icon button to iconbar of selected canvas.
-            var b = $('<button>'), text=opt.text||false;
-            if (opt.title) { opt.title = opt.title + ''; b.attr({ title: opt.title }); }
-            //if (opt.text) { opt.text = opt.text + ''; b.text( opt.text ); } //(NOT WORKING YET  b.css("width", "50px"))
-            b.button({ icons: { primary: "gsapp-icon " + opt.icon }, text: text }) // REQUIRES opt.icon for now!
-            b.children("span").removeClass('ui-icon')
-            b.click( function() { $(this).blur(); });
-            this.canvas.iconbar.append(b);
-            return b;
-        }
-            
         // Add all remaining properties of GSApp.
         for (var id in options) this[id] = options[id];
 
