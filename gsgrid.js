@@ -30,9 +30,9 @@
         
         var E = this.E = {};
         var V0 = this.V0 = {};
-        var V0 = this.V1 = {};
-        var V0 = this.V2 = {};
-        var V0 = this.V3 = {};
+        var V1 = this.V1 = {};
+        var V2 = this.V2 = {};
+        var V3 = this.V3 = {};
     }
     GridPoint.prototype.constructor = GridPoint;
     Object.defineProperty(GridPoint.prototype, "pos", { configurable: false, enumerable: true, get: function() {return this.lbl.pos;},
