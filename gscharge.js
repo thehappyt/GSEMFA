@@ -69,8 +69,8 @@
         this.sources[this.__sid] = this;
         //__changed[this.__sid] = this;
         
-        var self = this;
         if (nextSourceId===1) {
+            var self = this;
             this.canvas.elements.dblclick(function() {
                 obj = self.canvas.mouse.pick()
                 if (obj) {
@@ -98,7 +98,6 @@
                     }
                 }
             })
-            
             this.canvas.bind("mousemove", function() {
                 if (drag) {
                     obj.pos=self.canvas.mouse.pos
@@ -112,7 +111,6 @@
                     //grid.update();
                 }
             })
-            
             this.canvas.bind("mouseup", function () {
                 if (drag) drag = false
                 if (stretch) stretch = false
