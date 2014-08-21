@@ -27,6 +27,8 @@
             cvs.width = options.width || high;
             cvs.height = options.height || high;
             cvs.background = options.background || vec(1,1,1);
+            cvs.center = options.center || vec(0,0,0);
+            cvs.fov = options.fov || pi/100;
             cvs.resizable = options.resizable || false;
             cvs.title.text(options.title || '');
             cvs.caption.text(options.caption || '');
@@ -37,6 +39,7 @@
             $(cvs.__overlay_element).css({border: '1px solid #AAA'})
             delete options.width; delete options.height; delete options.resizable;
             delete options.background; delete options.title; delete options.caption; 
+            delete options.center; delete options.fov;
             for (var id in options) cvs[id] = options[id];
             sphere({ canvas: cvs, visible: false });     // Activate canvas
         }
