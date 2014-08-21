@@ -2,6 +2,7 @@
     "use strict";
     
     var nextGridId = 1;
+    var nextVId = 1;
     
     function GridPoint(args) {
         if (!(this instanceof GridPoint)) return new GridPoint(args);
@@ -10,17 +11,17 @@
     
         args = args || {};
         // *** INIT PRELIMINARY ARGUMENTS ***
-        this.canvas = args.canvas || canvas.selected; if (args.canvas) delete args.canvas;
+        this.grid = args.grid || new Grid({canvas: canvas.selected}); delete args.grid;
+        this.canvas = args.canvas || this.grid.canvas; delete args.canvas;
         this.__gpid = args.__gpid || 0; delete args.__gpid;
-        this.grid = args.grid || new Grid({canvas: this.canvas}); delete args.grid;
-        this.d = args.d || args.grid.d || 1; if (args.d) delete args.d;
-        args.v0 = args.v0 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
-        args.v1 = args.v1 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
-        args.v2 = args.v2 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
-        args.v3 = args.v3 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
+        this.d = args.d || args.grid.d; delete args.d;
+        args.v0 = args.v0 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), V: 0 });
+        args.v1 = args.v1 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), V: 0 });
+        args.v2 = args.v2 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), V: 0 });
+        args.v3 = args.v3 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), V: 0 });
         // *** INIT GRID and GRIDPOINTS (Label, Efield, VQuad) using PRELIMINARY VARIABLES ***
         this.lbl = label({ canvas: this.canvas, text: 'X', color: vec(0,1,0), height: 6, font: 'Verdana', box: false, line: false, opacity: 0, visible: false });
-        this.efv = arrow({ canvas: this.canvas,  pickable: false, color:vec(0,0,0), axis_and_length: vec(0.5,0,0), shaftwidth: this.grid.shaftwidth, visible: false });
+        this.efv = arrow({ canvas: this.canvas,  pickable: false, color:vec(0,0,0), axis_and_length: vec(0,0,0), shaftwidth: this.grid.shaftwidth, visible: false, E: vec(0,0,0), Es: Object.create(null) });
         this.vqd =  quad({ canvas: this.canvas, pickable: false, v0: args.v0, v1: args.v1, v2: args.v2, v3: args.v3, visible: false });     //  visible must come after v0, v1, v2, v3 in args (bug in Primitives.js)
         // *** DELETE PRELIMINARY ARGUMENTS ***
         delete args.v0; delete args.v1; delete args.v2; delete args.v3;
@@ -28,11 +29,7 @@
         args.pos = args.pos || args.canvas.center;
         for(var id in args) this[id] = args[id];
         
-        var E = this.E = {};
-        var V0 = this.V0 = {};
-        var V1 = this.V1 = {};
-        var V2 = this.V2 = {};
-        var V3 = this.V3 = {};
+        this.efv.Es[0] = vec(0,0,0);
     }
     GridPoint.prototype.constructor = GridPoint;
     Object.defineProperty(GridPoint.prototype, "pos", { configurable: false, enumerable: true, get: function() {return this.lbl.pos;},
@@ -42,10 +39,10 @@
             var ohat = this.grid.ohat, rhat = this.grid.rhat, that = this.grid.that, voff = this.grid.voff || -0.1;
             this.lbl.pos = pos.add(ohat.multiply(this.grid.loff || 0.0));
             this.efv.pos = pos.add(ohat.multiply(this.grid.eoff || 0.4));
-            this.vqd.v0.pos = pos.add((ohat.multiply(voff)).add((this.grid.rhat.add(this.grid.that)).multiply(0.5*this.grid.d)));
-            this.vqd.v1.pos = pos.add((ohat.multiply(voff)).sub((this.grid.rhat.sub(this.grid.that)).multiply(0.5*this.grid.d)));
-            this.vqd.v2.pos = pos.add((ohat.multiply(voff)).sub((this.grid.rhat.add(this.grid.that)).multiply(0.5*this.grid.d)));
-            this.vqd.v3.pos = pos.add((ohat.multiply(voff)).add((this.grid.rhat.sub(this.grid.that)).multiply(0.5*this.grid.d)));
+            this.vqd.v0.pos = pos.add(ohat.multiply(voff)).add((rhat.add(that)).multiply(0.5*this.grid.d));
+            this.vqd.v1.pos = pos.add(ohat.multiply(voff)).sub((rhat.sub(that)).multiply(0.5*this.grid.d));
+            this.vqd.v2.pos = pos.add(ohat.multiply(voff)).sub((rhat.add(that)).multiply(0.5*this.grid.d));
+            this.vqd.v3.pos = pos.add(ohat.multiply(voff)).add((rhat.sub(that)).multiply(0.5*this.grid.d));
         }
     });
     Object.defineProperty(GridPoint.prototype, "cleanUp",  { configurable: false, enumerable: true,  writable: false, 
@@ -131,7 +128,10 @@
             this.canvas.range = d*(N+0.25);
             this.canvas.center = this.center;
             this.Nt = pow((2*this.N)+1,2);
-            var gps = this.gps = {}                                                                                                 /////// *this.gps*              /////// REQUIRED
+            var gps = this.gps = {};                                                                                                 /////// *this.gps*              /////// REQUIRED
+            var gpv = this.gpv = Object.create(null);
+            var canvas = this.canvas;
+            var sources = this.sources;
             var ohat = this.ohat = this.canvas.out();
             var rhat = this.rhat = this.canvas.right();
             var that = this.that = this.canvas.top();
@@ -141,17 +141,57 @@
             var v0, v1, v2, v3;
             for (var n = 1, i=-N, j=-N; n<=this.Nt; n++) {
                 // Need initial setup of efield vectors, HERE!
-                v0 = vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) });
-                v1 = (i==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) }):gps[n-2*N-1].vqd.v0
-                v2 = (i==-N)?(j==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) }):gps[n-1].vqd.v1:gps[n-2*N-1].vqd.v3
-                v3 = (j==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1) }):gps[n-1].vqd.v0
-                gps[n] = new GridPoint({ canvas: this.canvas, pos: center.add((rhat.multiply(i*d)).add(that.multiply(j*d))), grid: this, __gpid: n, d: this.d, v0: v0, v1: v1, v2: v2, v3: v3 });
+                v0 = vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), __vid: nextVId++, V: 0, Vs: Object.create(null) });
+                v1 = (i==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), __vid: nextVId++, V: 0, Vs: Object.create(null) }):gps[n-2*N-1].vqd.v0
+                v2 = (i==-N)?(j==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), __vid: nextVId++, V: 0, Vs: Object.create(null) }):gps[n-1].vqd.v1:gps[n-2*N-1].vqd.v3
+                v3 = (j==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), __vid: nextVId++, V: 0, Vs: Object.create(null) }):gps[n-1].vqd.v0
+                v0.Vs[0] = 0; v1.Vs[0] = 0; v2.Vs[0] = 0; v3.Vs[0] = 0;
+                gps[n] = new GridPoint({ pos: center.add((rhat.multiply(i*d)).add(that.multiply(j*d))), grid: this, __gpid: n, d: this.d, v0: v0, v1: v1, v2: v2, v3: v3 });
+                if (!gpv[v0.__vid]) gpv[v0.__vid] = v0;
+                if (!gpv[v1.__vid]) gpv[v1.__vid] = v1;
+                if (!gpv[v2.__vid]) gpv[v2.__vid] = v2;
+                if (!gpv[v3.__vid]) gpv[v3.__vid] = v3;
                 if ((j == N) && (i < N)) {i++; j=-N;} else j++;
             }
-            
+
             this.__gid = nextGridId++;
             this.grids[this.__gid] = this;
             this.canvas.grid = this;
+            
+            this.canvas.elements.on("chargemove", function(ev, __sid) {
+                for (var gid in gps) {
+                    var gp = gps[gid], gpe = gp.efv;
+                    gpe.E.sub(gpe.Es[__sid]);
+                    gpe.Es[__sid] = sources[__sid].E(gp.pos);
+                    if (gpe.Es[__sid] == NaN) {gp.ehide = true; gpe.Es[__sid] = vec(0,0,0);}
+                    else if (gp.ehide) gp.ehide = false;
+                    gpe.E.add(gpe.Es[__sid]);
+                    gpe.axis_and_length = norm(gpe.E);
+                    gpe.opacity = 1-Math.exp(-mag(gpe.E));
+                }
+                for (var vid in gpv) {
+                    var vp = gpv[vid], vpq = vp.canvas.__vertices.object_info[vp.__id];
+                    vp.V -= vp.Vs[__sid]);
+                    vp.Vs[__sid] = sources[__sid].V(vp.canvas.inPlane(vp.pos));
+                    if (vp.Vs[__sid] == NaN) {
+                        for (var vi in vpq) vpq[vi].vhide = true;
+                        vp.Vs[__sid] = 0;
+                    } else {
+                        for (var vi in vps) { if (vps[vi].vhide) vps[vi].vhide = false; }
+                    }
+                }
+                
+                V0[__sid] = self.grid.sources[__sid].V(self.pos.add((self.grid.rhat.add(self.grid.that)).multiply(0.5*self.grid.d)))
+                V1[__sid] = self.grid.sources[__sid].V(self.pos.sub((self.grid.rhat.sub(self.grid.that)).multiply(0.5*self.grid.d)))
+                V2[__sid] = self.grid.sources[__sid].V(self.pos.sub((self.grid.rhat.add(self.grid.that)).multiply(0.5*self.grid.d)))
+                V3[__sid] = self.grid.sources[__sid].V(self.pos.add((self.grid.rhat.sub(self.grid.that)).multiply(0.5*self.grid.d)))
+                if (E[__sid] == NaN) {self.ehide = true; E[__sid] = vec(0,0,0);}
+                else if (self.ehide) self.ehide = false;
+                self.efv.E.add(E[__sid]);
+                self.efv.axis_and_length = norm(self.efv.E);
+                self.efv.opacity = 1-Math.exp(-mag(self.efv.E));
+            })
+            
             this.__activated = true;
         }
     })
