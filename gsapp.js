@@ -5,6 +5,10 @@
     var high = Number(window.innerHeight) - 78              // 36 for status bar, 21 for title, 24 for menubar, 21 for iconbar
     var wide = Number(window.innerWidth) - 20               // 20 for good measure
     
+    // Load necessary styling.
+    var myStylesLocation = "https://raw.githack.com/thehappyt/PHY-GSInit/master/gsapp.css";
+    $('<link rel="stylesheet" type="text/css" href="'+myStylesLocation+'" >').appendTo("head");
+
     function GSapp(options) {
         if (!(this instanceof GSapp)) return new GSapp(options);
         if (this.__activated) return this;
@@ -144,10 +148,6 @@
             return b;
         }
             
-        // Load necessary styling.
-        var myStylesLocation = "https://raw.githack.com/thehappyt/PHY-GSInit/master/gsapp.css";
-        $('<link rel="stylesheet" type="text/css" href="'+myStylesLocation+'" >').appendTo("head");
-        
         // Add all remaining properties of GSApp.
         for (var id in options) this[id] = options[id];
 
