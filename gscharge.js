@@ -93,8 +93,8 @@
                 } else {
                     if (__state.src) {
                         drag=true;
-                        if (__state.src == 1) obj = new PointCharge({ pos:self.canvas.mouse.pos })
-                        else if (__state.src == 2) obj = new LineCharge({ pos:self.canvas.mouse.pos })
+                        if (self.canvas.state.src == 1) obj = new PointCharge({ pos:self.canvas.mouse.pos })
+                        else if (self.canvas.state.src == 2) obj = new LineCharge({ pos:self.canvas.mouse.pos })
                     }
                 }
             })
