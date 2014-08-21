@@ -151,7 +151,7 @@
             
             var self = this, leftButton = false, scrollButton = false, rightButton = false, rotating = false, zooming = false;
             this.canvas.elements.bind("mousewheel", function() {
-                print(self.canvas.range, self.canvas.forward);
+                //console.log(self.canvas.range, self.canvas.forward);
                 self.update_rca();
             } );
             this.canvas.elements.mousedown(function (ev) {
@@ -163,7 +163,7 @@
             })
             this.canvas.elements.mousemove(function (ev) {
                 if (zooming || rotating) {
-                    print(self.canvas.range, self.canvas.forward);
+                    //console.log(self.canvas.range, self.canvas.forward);
                     self.update_rca();
                 }
             })
