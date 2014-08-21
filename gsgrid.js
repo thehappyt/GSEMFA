@@ -20,9 +20,9 @@
         args.v2 = args.v2 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), V: 0 });
         args.v3 = args.v3 || vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), V: 0 });
         // *** INIT GRID and GRIDPOINTS (Label, Efield, VQuad) using PRELIMINARY VARIABLES ***
-        this.lbl = label({ canvas: this.canvas, text: 'X', color: vec(0,1,0), height: 6, font: 'Verdana', box: false, line: false, opacity: 0, visible: false });
-        this.efv = arrow({ canvas: this.canvas,  pickable: false, color:vec(0,0,0), axis_and_length: vec(0,0,0), shaftwidth: this.grid.shaftwidth, visible: false, E: vec(0,0,0), Es: Object.create(null) });
-        this.vqd =  quad({ canvas: this.canvas, pickable: false, v0: args.v0, v1: args.v1, v2: args.v2, v3: args.v3, visible: false });     //  visible must come after v0, v1, v2, v3 in args (bug in Primitives.js)
+        this.lbl = label({ canvas: this.canvas, text: 'X', color: vec(0,1,0), height: 6, font: 'Verdana', box: false, line: false, opacity: 0, visible: false, gp: this });
+        this.efv = arrow({ canvas: this.canvas,  pickable: false, color:vec(0,0,0), axis_and_length: vec(0,0,0), shaftwidth: this.grid.shaftwidth, visible: false, gp: this, E: vec(0,0,0), Es: Object.create(null) });
+        this.vqd =  quad({ canvas: this.canvas, pickable: false, v0: args.v0, v1: args.v1, v2: args.v2, v3: args.v3, visible: false, gp: this });     //  visible must come after v0, v1, v2, v3 in args (bug in Primitives.js)
         // *** DELETE PRELIMINARY ARGUMENTS ***
         delete args.v0; delete args.v1; delete args.v2; delete args.v3;
         // *** SET REMAINING ARGUMENTS ***
@@ -129,7 +129,7 @@
             this.canvas.center = this.center;
             this.Nt = pow((2*this.N)+1,2);
             var gps = this.gps = {};                                                                                                 /////// *this.gps*              /////// REQUIRED
-            var gpv = this.gpv = Object.create(null);
+            var vvs = this.vvs = Object.create(null);
             var canvas = this.canvas;
             var sources = this.sources;
             var ohat = this.ohat = this.canvas.out();
@@ -147,10 +147,10 @@
                 v3 = (j==-N)?vertex({ canvas: this.canvas, opacity: 0.5, color: vec(1,1,1), __vid: nextVId++, V: 0, Vs: Object.create(null) }):gps[n-1].vqd.v0
                 v0.Vs[0] = 0; v1.Vs[0] = 0; v2.Vs[0] = 0; v3.Vs[0] = 0;
                 gps[n] = new GridPoint({ pos: center.add((rhat.multiply(i*d)).add(that.multiply(j*d))), grid: this, __gpid: n, d: this.d, v0: v0, v1: v1, v2: v2, v3: v3 });
-                if (!gpv[v0.__vid]) gpv[v0.__vid] = v0;
-                if (!gpv[v1.__vid]) gpv[v1.__vid] = v1;
-                if (!gpv[v2.__vid]) gpv[v2.__vid] = v2;
-                if (!gpv[v3.__vid]) gpv[v3.__vid] = v3;
+                if (!vvs[v0.__vid]) vvs[v0.__vid] = v0;
+                if (!vvs[v1.__vid]) vvs[v1.__vid] = v1;
+                if (!vvs[v2.__vid]) vvs[v2.__vid] = v2;
+                if (!vvs[v3.__vid]) vvs[v3.__vid] = v3;
                 if ((j == N) && (i < N)) {i++; j=-N;} else j++;
             }
 
@@ -159,8 +159,26 @@
             this.canvas.grid = this;
             
             this.canvas.elements.on("chargemove", function(ev, __sid) {
-                for (var gid in gps) {
-                    var gp = gps[gid], gpe = gp.efv;
+                // Update Potential Quads
+                var vqh = Object.create(null);
+                for (var vid in vvs) {
+                    var vv = vvs[vid], vqs = vv.canvas.__vertices.object_info[vv.__id];
+                    vv.V -= vv.Vs[__sid]);
+                    vv.Vs[__sid] = sources[__sid].V(vv.canvas.inPlane(vv.pos));
+                    if (vv.Vs[__sid] == NaN) {
+                        for (var qid in vqs) vqh[vqs[qid].gp.__gpid] = vqs[qid];
+                        vv.Vs[__sid] = 0;
+                    }
+                    vv.V += vv.Vs[__sid];
+                    // SET COLOR OF POTENTIAL
+                }
+                // Update Efield Arrows
+                for (var gpid in gps) {
+                    // Add final touches to potential quads update.
+                    if (vqh[gpid]) gps[gpid].vhide = true;
+                    else if (gps[gpid].vhide) gps[gpid].vhide = false;
+                    // Finally get to efield arrow update.
+                    var gp = gps[gpid], gpe = gp.efv;
                     gpe.E.sub(gpe.Es[__sid]);
                     gpe.Es[__sid] = sources[__sid].E(gp.pos);
                     if (gpe.Es[__sid] == NaN) {gp.ehide = true; gpe.Es[__sid] = vec(0,0,0);}
@@ -169,22 +187,7 @@
                     gpe.axis_and_length = norm(gpe.E);
                     gpe.opacity = 1-Math.exp(-mag(gpe.E));
                 }
-                for (var vid in gpv) {
-                    var vp = gpv[vid], vpq = vp.canvas.__vertices.object_info[vp.__id];
-                    vp.V -= vp.Vs[__sid]);
-                    vp.Vs[__sid] = sources[__sid].V(vp.canvas.inPlane(vp.pos));
-                    if (vp.Vs[__sid] == NaN) {
-                        for (var vi in vpq) vpq[vi].vhide = true;
-                        vp.Vs[__sid] = 0;
-                    } else {
-                        for (var vi in vps) { if (vps[vi].vhide) vps[vi].vhide = false; }
-                    }
-                }
-                
-                V0[__sid] = self.grid.sources[__sid].V(self.pos.add((self.grid.rhat.add(self.grid.that)).multiply(0.5*self.grid.d)))
-                V1[__sid] = self.grid.sources[__sid].V(self.pos.sub((self.grid.rhat.sub(self.grid.that)).multiply(0.5*self.grid.d)))
-                V2[__sid] = self.grid.sources[__sid].V(self.pos.sub((self.grid.rhat.add(self.grid.that)).multiply(0.5*self.grid.d)))
-                V3[__sid] = self.grid.sources[__sid].V(self.pos.add((self.grid.rhat.sub(self.grid.that)).multiply(0.5*self.grid.d)))
+
                 if (E[__sid] == NaN) {self.ehide = true; E[__sid] = vec(0,0,0);}
                 else if (self.ehide) self.ehide = false;
                 self.efv.E.add(E[__sid]);
