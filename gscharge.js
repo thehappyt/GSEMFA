@@ -1,7 +1,7 @@
 ;(function () {
     "use strict";
     
-    function qsc(q) { return q?q>0?vec(1.0,0.0,0.0):vec(0.0,0.0,1.0):vec(0.3,0.3,0.3) }
+    function qsc(q) { return q?q>0?vec(1.0,0.5,0.5):vec(0.5,0.5,1.0):vec(0.3,0.3,0.3) }
     function qlc(q) { return q?q>0?vec(0.5,0.5,1.0):vec(0.8,0.8,0.0):vec(0.7,0.7,0.7) }
     function isNumString(v) { return (/^-?\d+[.]?\d*$/.test(v)) }
     
