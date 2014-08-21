@@ -5,7 +5,7 @@
     function qlc(q) { return q?q>0?vec(0.0,0.0,0.0):vec(0.0,0.0,0.0):vec(0.7,0.7,0.7) }
     function isNumString(v) { return (/^-?\d+[.]?\d*$/.test(v)) }
     
-    var nextSourceId = 1;
+    var nextSourceId = 1, obj, drag, stretch;
     
     var asCharge = function() {
         //Object to which asCharge constructor is applied must be a derived GlowScript Primitive object.
@@ -68,6 +68,57 @@
         this.__sid = nextSourceId++;
         this.sources[this.__sid] = this;
         //__changed[this.__sid] = this;
+        
+        var self = this;
+        if (nextSourceId===1) {
+            this.canvas.elements.dblclick(function() {
+                obj = self.canvas.mouse.pick()
+                if (obj) {
+                    if (obj instanceof PointCharge || obj instanceof LineCharge) {
+                        drag = false;
+                        obj.q = prompt("Enter charge value: ",String(obj.q))
+                        //grid.update();
+                        obj={}
+                    }
+                }    
+            })
+            this.canvas.bind("mousedown", function() {
+                obj = self.canvas.mouse.pick()
+                if (obj) {
+                    if (obj instanceof PointCharge ) drag=true;
+                    else if (obj instanceof LineCharge) {
+                        if (obj.pick == 3) drag=true;
+                        else stretch=true;
+                    }
+                } else {
+                    if (__state.src) {
+                        drag=true;
+                        if (__state.src == 1) obj = new PointCharge({ pos:self.canvas.mouse.pos })
+                        else if (__state.src == 2) obj = new LineCharge({ pos:self.canvas.mouse.pos })
+                    }
+                }
+            })
+            
+            this.canvas.bind("mousemove", function() {
+                if (drag) {
+                    obj.pos=self.canvas.mouse.pos
+                    //grid.update();
+                } else if (stretch) {
+                    var mp=self.canvas.mouse.pos
+                    //mp=(s2g)?nearGP(mp):mp
+                    var sign = obj.pick>3?1:-1
+                    obj.axis=(norm(mp.sub(obj.pos))).multiply(sign)
+                    obj.size.x=2*mag(mp.sub(obj.pos))
+                    //grid.update();
+                }
+            })
+            
+            this.canvas.bind("mouseup", function () {
+                if (drag) drag = false
+                if (stretch) stretch = false
+                obj = {}
+            })
+        }
         
         /*
         //this.__efl = new Array(Math.floor(abs(this.__q * eflno)))  // Setting up automatically plotted E-field lines (#/charge distributed uniformly based on symmetry)
@@ -167,7 +218,7 @@
         //this.efv; // Initialize E-field vectors.
     }
     LineCharge.prototype = curve.prototype
-    
+
     var global = window
     function Export( exports ) {
         if (!global.gsapp) global.gsapp = {}
@@ -179,6 +230,5 @@
 
     var exports = { PointCharge: PointCharge, LineCharge: LineCharge }
     Export(exports)
-
 
 }) ();
