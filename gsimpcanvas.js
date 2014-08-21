@@ -1,6 +1,8 @@
 ;(function () {
     "use strict";
     
+    var obj, drag, stretch, leftButton = false, scrollButton = false, rightButton = false, rotating = false, zooming = false;
+    
     Object.defineProperty(canvas.prototype, "out",     {configurable: false, enumerable: true,  writable: true,
         value: function()  { return this.forward.multiply(-1).norm();            } })
     Object.defineProperty(canvas.prototype, "right",   {configurable: false, enumerable: true,  writable: true,
@@ -22,4 +24,5 @@
     Object.defineProperty(canvas.prototype, "state", {configurable: false, enumerable: true, writable: false,
         value: { src: 0 }
     })
+
 }) ();
