@@ -70,7 +70,8 @@
         }
 
         this.bindForGrids = function() {
-            var self = this.canvas;        
+            var self = this.canvas;
+            var leftButton = false, scrollButton = false, rightButton = false, zooming = false, rotating = false;
             // ************** Setup Binding for Grids **************
             self.elements.bind("mousewheel", function() {
                 //console.log(self.range, self.forward);
@@ -99,21 +100,22 @@
         }
         
         this.bindForCharges = function() {
-            var self = this.canvas;        
+            var self = this.canvas;
+            var obj = null, drag = false, stretch = false; 
             // ************** Setup Binding for Charges **************
             self.elements.dblclick(function() {
                 obj = self.mouse.pick()
                 if (obj) {
                     if (obj instanceof PointCharge || obj instanceof LineCharge) {
                         drag = false;
-                        obj.q = prompt("Enter charge value: ", String(obj.q))
+                        obj.q = prompt("Enter charge value: ", String(obj.q));
                         //grid.update();
-                        obj={}
+                        obj=null;
                     }
                 }    
             })
             self.bind("mousedown", function() {
-                obj = self.mouse.pick()
+                obj = self.mouse.pick();
                 if (obj) {
                     if (obj instanceof PointCharge ) drag=true;
                     else if (obj instanceof LineCharge) {
@@ -123,28 +125,28 @@
                 } else {
                     if (self.state.src) {
                         drag=true;
-                        if (self.state.src == 1) obj = new PointCharge({ pos:self.mouse.pos })
-                        else if (self.state.src == 2) obj = new LineCharge({ pos:self.mouse.pos })
+                        if (self.state.src == 1) obj = new PointCharge({ pos:self.mouse.pos });
+                        else if (self.state.src == 2) obj = new LineCharge({ pos:self.mouse.pos });
                     }
                 }
             })
             self.bind("mousemove", function() {
                 if (drag) {
-                    obj.pos=self.mouse.pos
+                    obj.pos=self.mouse.pos;
                     //grid.update();
                 } else if (stretch) {
-                    var mp=self.mouse.pos
-                    //mp=(s2g)?nearGP(mp):mp
-                    var sign = obj.pick>3?1:-1
-                    obj.axis=(norm(mp.sub(obj.pos))).multiply(sign)
-                    obj.size.x=2*mag(mp.sub(obj.pos))
+                    var mp=self.mouse.pos;
+                    //mp=(s2g)?nearGP(mp):mp;
+                    var sign = obj.pick>3?1:-1;
+                    obj.axis=(norm(mp.sub(obj.pos))).multiply(sign);
+                    obj.size.x=2*mag(mp.sub(obj.pos));
                     //grid.update();
                 }
             })
             self.bind("mouseup", function () {
-                if (drag) drag = false
-                if (stretch) stretch = false
-                obj = {}
+                if (drag) drag = false;
+                if (stretch) stretch = false;
+                obj = null;
             })
         }
             
