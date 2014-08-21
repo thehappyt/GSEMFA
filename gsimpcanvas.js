@@ -19,4 +19,7 @@
     Object.defineProperty(canvas.prototype, "sources", {configurable: false, enumerable: true, writable: false,
         value: { chargesize: 0.75, qoff: 0.0, loff: 0.0, k0: 1.0 }
     })
+    Object.defineProperty(canvas.prototype, "state", {configurable: false, enumerable: true, writable: false,
+        value: { src: 0 }
+    })
 }) ();
