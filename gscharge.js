@@ -69,7 +69,7 @@
         this.sources[this.__sid] = this;
         //__changed[this.__sid] = this;
         
-        if (nextSourceId===1) {
+        if (nextSourceId==2) {
             var self = this;
             this.canvas.elements.dblclick(function() {
                 obj = self.canvas.mouse.pick()
