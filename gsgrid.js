@@ -158,8 +158,6 @@
             this.__gid = nextGridId++;
             this.grids[this.__gid] = this;
             this.__activated = true;
-
-            console.log(this);
         }
     })
     Object.defineProperty( Grid.prototype, "update_rca", { configurable: false, enumerable: true,  writable: false,
