@@ -106,11 +106,11 @@
         if (!args.canvas.grids || !args.canvas.sources) throw new Error("Sources require improved canvas.");
         args.grids = args.canvas.grids;
         args.sources = args.canvas.sources;
-        args.size = (vec(1,1,1)).multiply(args.sources.chargesize || 0.75);
-        args.qoff = args.sources.qoff || 0.0;
-        args.loff = args.sources.loff || 0.0;
-        args.k0 = args.sources.k0 || 1.0;
-        var args2 = {q: args.q || 0, pos: args.pos || vec(0,0,0), visible: args.visible || true };
+        args.size = (vec(1,1,1)).multiply(args.sources.chargesize);
+        args.qoff = args.sources.qoff;
+        args.loff = args.sources.loff;
+        args.k0 = args.sources.k0;
+        var args2 = {q: args.q || 0, pos: args.pos || args.canvas.center, visible: args.visible || true };
         delete args.q; delete args.pos;
         sphere.call(this, args);
         asCharge.call(this);
@@ -136,11 +136,11 @@
         if (!args.canvas.grids || !args.canvas.sources) throw new Error("Sources require improved canvas.");
         args.grids = args.canvas.grids;
         args.sources = args.canvas.sources;
-        args.radius = (args.sources.chargesize || 0.75)/2.0;
-        args.qoff = args.sources.qoff || 0.0;
-        args.loff = args.sources.loff || 0.0;
-        args.k0 = args.sources.k0 || 1.0;
-        var args2 = {q: args.q || 0, pos: args.pos || vec(0,0,0), visible: args.visible || true };
+        args.radius = args.sources.chargesize/2.0;
+        args.qoff = args.sources.qoff;
+        args.loff = args.sources.loff;
+        args.k0 = args.sources.k0;
+        var args2 = {q: args.q || 0, pos: args.pos || args.canvas.center, visible: args.visible || true };
         curve.call(this, args);
         this.push(vec(-0.5,0,0),vec(-0.5,0,0),vec(-0.2,0,0),vec(0.2,0,0),vec(0.5,0,0))
         asCharge.call(this);
