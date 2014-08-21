@@ -28,14 +28,11 @@
             cvs.width = options.width || high;
             cvs.height = options.height || high;
             cvs.background = options.background || vec(1,1,1);
-            sphere({ canvas: cvs, visible: false });     // Activate canvas
             cvs.center = options.center || vec(0,0,0);
             cvs.fov = options.fov || pi/100;
             cvs.resizable = options.resizable || false;
             cvs.title.text(options.title || '');
             cvs.caption.text(options.caption || '');
-            cvs.menubar = $("<div/>").css("white-space","pre").addClass("gsmenubar").insertBefore(this.canvas.wrapper)
-            cvs.iconbar = $("<div/>").css("white-space","pre").addClass("gsiconbar").insertBefore(this.canvas.wrapper)
             cvs.wrapper.css({margin: '4px'})
             $(cvs.__canvas_element).css({border: '1px solid #AAA'})
             $(cvs.__overlay_element).css({border: '1px solid #AAA'})
@@ -43,6 +40,9 @@
             delete options.background; delete options.title; delete options.caption; 
             delete options.center; delete options.fov;
             for (var id in options) cvs[id] = options[id];
+            sphere({ canvas: cvs, visible: false });     // Activate canvas (add to doc)
+            cvs.menubar = $("<div/>").css("white-space","pre").addClass("gsmenubar").insertBefore(this.canvas.wrapper)
+            cvs.iconbar = $("<div/>").css("white-space","pre").addClass("gsiconbar").insertBefore(this.canvas.wrapper)
         }
         
         this.selectCanvas = function(cvs) {         // CHANGE APPLICATION CANVAS
