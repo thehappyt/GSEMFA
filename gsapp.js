@@ -21,6 +21,7 @@
 
         this.addCanvas = function(options) {       // SETUP APPLICATION CANVAS
             print("Got here 1!")
+            options = options || {};
             var cvs = this.canvas = canvas();
             if (!cvs.sources || !cvs.grids) throw new Error("GSApp requires the improved GlowScript canvas module.");
             cvs.__cid = nextCanvasId++;
