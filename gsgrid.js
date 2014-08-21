@@ -123,6 +123,7 @@
             args.eoff = args.eoff || args.grids.eoff;
             args.voff = args.voff || args.grids.voff;
             for(var id in args) this[id] = args[id];
+            console.log(this.grids, this.sources, this.N, this.d, this.center, this.shaftwidth, this.loff, this.eoff, this.voff);
 
             // *** INIT VARIABLES ***
             var N = this.N;
