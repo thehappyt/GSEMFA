@@ -69,6 +69,35 @@
             this.canvas = cvs;
         }
 
+        this.bindForGrids = function() {
+            var self = this.canvas;        
+            // ************** Setup Binding for Grids **************
+            self.elements.bind("mousewheel", function() {
+                //console.log(self.range, self.forward);
+                for (var gid in self.grids) { self.grids[gid].update_rca(); }
+            } );
+            self.elements.mousedown(function (ev) {
+                if (ev.which == 1) leftButton = true;
+                if (ev.which == 2) scrollButton = true;
+                if (ev.which == 3) rightButton = true;
+                zooming = self.userzoom && (scrollButton || (leftButton && self.mouse.alt && !self.mouse.ctrl) || (leftButton && rightButton))
+                rotating = self.userspin && (rightButton || (leftButton && self.mouse.ctrl && !self.mouse.alt))
+            })
+            self.elements.mousemove(function (ev) {
+                if (zooming || rotating) {
+                    //console.log(self.range, self.forward);
+                    for (var gid in self.grids) { self.grids[gid].update_rca(); }
+                }
+            })
+            self.elements.mouseup(function (ev) {
+                if (ev.which == 1) leftButton = false;
+                if (ev.which == 2) scrollButton = false;
+                if (ev.which == 3) rightButton = false;
+                zooming = self.userzoom && (scrollButton || (leftButton && self.mouse.alt && !self.mouse.ctrl) || (leftButton && rightButton))
+                rotating = self.userspin && (rightButton || (leftButton && self.mouse.ctrl && !self.mouse.alt))
+            })
+        }
+        
         this.bindForCharges = function() {
             var self = this.canvas;        
             // ************** Setup Binding for Charges **************
@@ -119,35 +148,6 @@
             })
         }
             
-        this.bindForGrids = function() {
-            var self = this.canvas;        
-            // ************** Setup Binding for Grids **************
-            self.elements.bind("mousewheel", function() {
-                //console.log(self.range, self.forward);
-                for (var gid in self.grids) { self.grids[gid].update_rca(); }
-            } );
-            self.elements.mousedown(function (ev) {
-                if (ev.which == 1) leftButton = true;
-                if (ev.which == 2) scrollButton = true;
-                if (ev.which == 3) rightButton = true;
-                zooming = self.userzoom && (scrollButton || (leftButton && self.mouse.alt && !self.mouse.ctrl) || (leftButton && rightButton))
-                rotating = self.userspin && (rightButton || (leftButton && self.mouse.ctrl && !self.mouse.alt))
-            })
-            self.elements.mousemove(function (ev) {
-                if (zooming || rotating) {
-                    //console.log(self.range, self.forward);
-                    for (var gid in self.grids) { self.grids[gid].update_rca(); }
-                }
-            })
-            self.elements.mouseup(function (ev) {
-                if (ev.which == 1) leftButton = false;
-                if (ev.which == 2) scrollButton = false;
-                if (ev.which == 3) rightButton = false;
-                zooming = self.userzoom && (scrollButton || (leftButton && self.mouse.alt && !self.mouse.ctrl) || (leftButton && rightButton))
-                rotating = self.userspin && (rightButton || (leftButton && self.mouse.ctrl && !self.mouse.alt))
-            })
-        }
-        
         // Add all remaining properties of GSApp.
         for (var id in options) this[id] = options[id];
 
