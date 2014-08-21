@@ -28,6 +28,7 @@
             cvs.width = options.width || high;
             cvs.height = options.height || high;
             cvs.background = options.background || vec(1,1,1);
+            sphere({ canvas: cvs, visible: false });     // Activate canvas
             cvs.center = options.center || vec(0,0,0);
             cvs.fov = options.fov || pi/100;
             cvs.resizable = options.resizable || false;
@@ -42,7 +43,6 @@
             delete options.background; delete options.title; delete options.caption; 
             delete options.center; delete options.fov;
             for (var id in options) cvs[id] = options[id];
-            sphere({ canvas: cvs, visible: false });     // Activate canvas
         }
         
         this.selectCanvas = function(cvs) {         // CHANGE APPLICATION CANVAS
