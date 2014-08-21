@@ -151,6 +151,7 @@
             
             this.__gid = nextGridId++;
             this.grids[this.__gid] = this;
+            this.canvas.grid = this;
             this.__activated = true;
         }
     })
