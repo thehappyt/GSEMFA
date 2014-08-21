@@ -107,6 +107,7 @@
         args.grids = args.canvas.grids;
         args.sources = args.canvas.sources;
         args.size = (vec(1,1,1)).multiply(args.sources.chargesize);
+        args.opacity = 1;
         args.qoff = args.sources.qoff;
         args.loff = args.sources.loff;
         args.k0 = args.sources.k0;
@@ -137,6 +138,7 @@
         args.grids = args.canvas.grids;
         args.sources = args.canvas.sources;
         args.radius = args.sources.chargesize/2.0;
+        args.opacity = 1;
         args.qoff = args.sources.qoff;
         args.loff = args.sources.loff;
         args.k0 = args.sources.k0;
