@@ -1,6 +1,8 @@
 ;(function () {
     "use strict";
     
+    var nextGridId = 1;
+    
     function GridPoint(args) {
         if (!(this instanceof GridPoint)) return new GridPoint(args);
         if (this.__activated) {return this;}
@@ -153,6 +155,8 @@
                 self.update_rca();
             } );
 
+            this.__gid = nextGridId++;
+            this.grids[this.__gid] = this;
             this.__activated = true;
         }
     })
