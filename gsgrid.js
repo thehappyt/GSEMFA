@@ -123,9 +123,9 @@
             args.eoff = args.eoff || args.grids.eoff;
             args.voff = args.voff || args.grids.voff;
             for(var id in args) this[id] = args[id];
-            console.log(this.grids, this.sources, this.N, this.d, this.center, this.shaftwidth, this.loff, this.eoff, this.voff);
-
+            
             // *** INIT VARIABLES ***
+            console.log("Got Here 1!");
             var N = this.N;
             var d = this.d;
             var center = this.center;
@@ -139,6 +139,7 @@
             this.rcchg = false;     // Track changes to range or center of canvas.                                                   /////// this.rcchg
             
             // *** INIT ALL GRIDPOINTS (Labels, Efields, VQuads) ***
+            console.log("Got Here 2!");
             var v0, v1, v2, v3;
             for (var n = 1, i=-N, j=-N; n<=this.Nt; n++) {
                 // Need initial setup of efield vectors, HERE!
@@ -150,15 +151,18 @@
                 if ((j == N) && (i < N)) {i++; j=-N;} else j++;
             }
             
+            console.log("Got Here 3!");
             var self = this;
             this.canvas.elements.bind("mousewheel", function() {
                 print(self.canvas.range);
                 self.update_rca();
             } );
 
+            console.log("Got Here 4!");
             this.__gid = nextGridId++;
             this.grids[this.__gid] = this;
             this.__activated = true;
+            console.log("Got Here 5!");
         }
     })
     Object.defineProperty( Grid.prototype, "update_rca", { configurable: false, enumerable: true,  writable: false,
